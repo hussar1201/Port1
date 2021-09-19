@@ -8,62 +8,45 @@ public class Enemy_Shilka : MonoBehaviour
     private Rigidbody rb;
     private Transform target;
     private TurretRotator turretRotator;
-                
-    // Start is called before the first frame update
+    private Vector3 distance;
+    public float speed_move = 30f; //적 이동 속도 조정용 변수
+        
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         turretRotator = GetComponentInChildren<TurretRotator>();
         target = FindObjectOfType<PlayerController>().transform;
-              
+        distance = new Vector3(0f, 0f, 0f);
     }
-
-    // Update is called once per frame
+        
     void Update()
     {
-  
-        Vector3 distance =  target.position - transform.position;
+        //플레이어 - 적의 거리 계산 후,
+        distance = target.position - transform.position;
         distance.y = 0f;
-       
-        Vector3 dest = new Vector3(distance.x, 0f, distance.z);
-        dest = dest.normalized;
 
-        turretRotator.setTargetPos(dest);
+        turretRotator.setTargetPos(distance);
+        transform.LookAt(distance.normalized);
+        turretRotator.transform.LookAt(distance.normalized);
 
-
+        //거리에 따라 적이 취하는 행동을 결정
         if (distance.magnitude > 140f)
-        {
-            rb.velocity = new Vector3(0, 0, 0);
-            transform.LookAt(dest);
-            turretRotator.transform.LookAt(dest);
-        }
+            rb.velocity = Vector3.zero;
         else if (distance.magnitude > 100f)
+            rb.velocity = distance.normalized * speed_move;
+        else
         {
-            transform.LookAt(dest);
-            turretRotator.transform.LookAt(dest);
-            rb.velocity = dest * 30;
-
+            turretRotator.Fire();
+            rb.velocity = Vector3.zero;
         }
-        else if (distance.magnitude >= 0.0f)
-        {
-            
-            turretRotator.transform.LookAt(dest);
-            turretRotator.Fire();                        
-
-            rb.velocity = new Vector3(0, 0, 0);
-
-
-        }
-
     }
-
 
     public void Die()
     {
-        Destroy(gameObject,0.8f);
+        Destroy(gameObject, 0.8f);
     }
-
+}
 
         
-}
+
 

@@ -14,11 +14,7 @@ public class TurretRotator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //GetComponentInChildren 써야지 FindObjectOfType쓰면 프리펩 여러개가 맵에 있을 때 첫번째 프리펩 컴포넌트만 물어서 3놈이나
-        //있어도 1놈밖에 안쏴제낌.
-
-
-        bs = GetComponentInChildren<BulletSpawner>();
+       bs = GetComponentInChildren<BulletSpawner>();
                 
         timeSpawn = Random.Range(minTime, maxTime);                     
     }
@@ -27,27 +23,22 @@ public class TurretRotator : MonoBehaviour
     void Update()
     {
         time_now += Time.deltaTime;                    
-
     }
 
-    public void setTargetPos(Vector3 x)
+    public void setTargetPos(Vector3 pos_player)
     {
-        targetPos = x;
+        targetPos = pos_player;
         return;
     }
 
     public void Fire()
     {
-
         if (time_now >= timeSpawn && !GameManager.GameOver)
-        {
-            
+        {          
             timeSpawn = Random.Range(minTime, maxTime);
-            time_now = 0f;
-                       
+            time_now = 0f;                       
             bs.Fire();
         }       
-
     }
 
 
